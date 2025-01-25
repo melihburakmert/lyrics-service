@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.24"
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
 group = "mbm"
@@ -61,6 +62,20 @@ kotlin {
 	}
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
+	}
+}
+
+jib {
+	from {
+		image = "eclipse-temurin:21-jre"
+	}
+	to {
+		image = "${System.getenv("GCR_REGISTRY")}/${project.group}/${project.name}:${project.version}"
+	}
+	container {
+		mainClass = "mbm.lyrics_service.LyricsServiceApplicationKt"
+		ports = listOf("8083")
+		jvmFlags = listOf("-Xms512m", "-Xmx1024m")
 	}
 }
 
