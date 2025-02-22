@@ -10,6 +10,7 @@ import mbm.lyrics_service.lyrics.configuration.LyricsOvhProperties
 import mbm.lyrics_service.lyrics.domain.LyricsOvhResponse
 import mbm.lyrics_service.lyrics.mapper.LyricsOvhMapper
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 
@@ -43,17 +44,27 @@ class LyricsOvhService(
             onSuccess = { response -> lyricsDtoMapper.lyricsOvhResponseToDto(response, artist, title) },
             onFailure = { e ->
                 logger.error(e) { "Error while fetching lyrics from URI: $uri" }
-                LyricsDto(artist, title, "Lyrics not found")
+                LyricsDto(artist, title, "")
             }
         )
     }
 
     private fun getLyricsOvhResponse(uri: String): Result<LyricsOvhResponse> = runCatching {
-        val response = restClient.get()
+        restClient.get()
             .uri(uri)
             .retrieve()
-            .body<LyricsOvhResponse>()
-        response ?: throw IllegalStateException("Response body is null")
+            .body<LyricsOvhResponse>() ?: throw IllegalStateException("Response body is null")
+    }.recoverCatching { e ->
+        handleNotFoundOrPropagate(e, uri)
+    }
+
+    private fun handleNotFoundOrPropagate(e: Throwable, uri: String): LyricsOvhResponse {
+        return if (e is HttpClientErrorException.NotFound) {
+            logger.warn { "Lyrics not found for URI: $uri - ${e.message}" }
+            LyricsOvhResponse("")
+        } else {
+            throw e
+        }
     }
 
     private fun buildUri(artist: String, title: String) = "${lyricsOvhProperties.apiUri}/$artist/$title"
