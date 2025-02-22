@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class LyricsOvhMapper {
     fun lyricsOvhResponseToDto(lyricsOvhResponse: LyricsOvhResponse, artist: String, title: String): LyricsDto {
-        return LyricsDto(artist, title, lyricsOvhResponse.lyrics)
+        val lyrics = lyricsOvhResponse.lyrics.replace(Regex("\\s+"), " ").trim()
+        return LyricsDto(artist, title, lyrics)
     }
 }

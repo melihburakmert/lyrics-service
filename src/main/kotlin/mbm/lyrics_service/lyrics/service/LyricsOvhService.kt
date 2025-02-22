@@ -3,7 +3,7 @@ package mbm.lyrics_service.lyrics.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mbm.lyrics_service.domain.SongItem
+import mbm.lyrics_service.domain.Track
 import mbm.lyrics_service.lyrics.LyricsDto
 import mbm.lyrics_service.lyrics.LyricsService
 import mbm.lyrics_service.lyrics.configuration.LyricsOvhProperties
@@ -22,12 +22,12 @@ class LyricsOvhService(
     private val lyricsDtoMapper: LyricsOvhMapper
 ) : LyricsService {
 
-    override fun getLyricsInBulk(songs: List<SongItem>): List<LyricsDto> = runBlocking {
+    override fun getLyricsInBulk(songs: List<Track>): List<LyricsDto> = runBlocking {
         logger.info { "Starting bulk fetch for ${songs.size} songs" }
 
         val lyricsList = songs.map { song ->
             rateLimit(5000) {
-                getLyrics(song.artist, song.track)
+                getLyrics(song.artist, song.title)
             }
         }
         logger.info { "Completed bulk fetch for ${songs.size} songs" }
