@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/lyrics")
+@RequestMapping("/lyrics")
 class LyricsController(
     private val lyricsService: LyricsService,
     private val lyricsResponseMapper: LyricsResponseMapper
 ) {
 
-    @GetMapping("")
+    @GetMapping
     fun getLyrics(
         @RequestParam artist: String?,
         @RequestParam title: String?
