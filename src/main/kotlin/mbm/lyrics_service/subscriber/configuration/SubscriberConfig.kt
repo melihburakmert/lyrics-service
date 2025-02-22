@@ -1,6 +1,6 @@
 package mbm.lyrics_service.subscriber.configuration
 
-import mbm.lyrics_service.subscriber.receiver.RecentlyPlayedSongsReceiver
+import mbm.lyrics_service.subscriber.receiver.PlaybackDataReceiver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
@@ -9,7 +9,7 @@ import org.springframework.messaging.Message
 class SubscriberConfig {
 
     @Bean
-    fun recentlyPlayedSongsConsumer(receiver: RecentlyPlayedSongsReceiver): (Message<String>) -> Unit {
+    fun playbackDataConsumer(receiver: PlaybackDataReceiver): (Message<String>) -> Unit {
         return receiver::receive
     }
 }
