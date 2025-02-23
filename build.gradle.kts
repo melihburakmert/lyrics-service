@@ -28,6 +28,7 @@ repositories {
 dependencies {
 	// BOMs
 	implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2024.0.0"))
+	implementation(platform("org.springframework.modulith:spring-modulith-bom:1.3.2"))
 	implementation(platform("com.google.cloud:spring-cloud-gcp-dependencies:5.9.0"))
 
 	// Coroutines
@@ -37,6 +38,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	// Modulith
+	implementation("org.springframework.modulith:spring-modulith-starter-core")
+	implementation("org.springframework.modulith:spring-modulith-starter-test")
 
 	// Logging
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
