@@ -1,7 +1,7 @@
 package mbm.lyrics_service.publisher
 
-import mbm.lyrics_service.lyrics.LyricsDto
+import mbm.lyrics_service.domain.LyricsDataDto
 
 interface PublisherService {
-    fun publishLyrics(lyrics: List<LyricsDto>)
+    fun publishLyrics(lyricsDataDto: LyricsDataDto)
 }

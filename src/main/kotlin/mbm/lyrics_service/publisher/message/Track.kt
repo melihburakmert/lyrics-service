@@ -1,4 +1,4 @@
-package mbm.lyrics_service.domain
+package mbm.lyrics_service.publisher.message
 
 import java.io.Serializable
 

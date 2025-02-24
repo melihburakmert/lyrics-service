@@ -1,6 +1,7 @@
 package mbm.lyrics_service.lyrics.mapper
 
-import mbm.lyrics_service.lyrics.LyricsDto
+import mbm.lyrics_service.domain.LyricsDto
+import mbm.lyrics_service.domain.TrackDto
 import mbm.lyrics_service.lyrics.domain.LyricsOvhResponse
 import org.springframework.stereotype.Component
 
@@ -8,6 +9,6 @@ import org.springframework.stereotype.Component
 class LyricsOvhMapper {
     fun lyricsOvhResponseToDto(lyricsOvhResponse: LyricsOvhResponse, artist: String, title: String): LyricsDto {
         val lyrics = lyricsOvhResponse.lyrics.replace(Regex("\\s+"), " ").trim()
-        return LyricsDto(artist, title, lyrics)
+        return LyricsDto(TrackDto(artist, title), lyrics)
     }
 }

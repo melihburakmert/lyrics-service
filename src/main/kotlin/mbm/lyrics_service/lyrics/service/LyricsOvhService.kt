@@ -3,8 +3,7 @@ package mbm.lyrics_service.lyrics.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mbm.lyrics_service.domain.Track
-import mbm.lyrics_service.lyrics.LyricsDto
+import mbm.lyrics_service.domain.*
 import mbm.lyrics_service.lyrics.LyricsService
 import mbm.lyrics_service.lyrics.configuration.LyricsOvhProperties
 import mbm.lyrics_service.lyrics.domain.LyricsOvhResponse
@@ -20,21 +19,21 @@ private val logger = KotlinLogging.logger {}
 class LyricsOvhService(
     private val restClient: RestClient,
     private val lyricsOvhProperties: LyricsOvhProperties,
-    private val lyricsDtoMapper: LyricsOvhMapper
+    private val lyricsDtoMapper: LyricsOvhMapper,
 ) : LyricsService {
 
-    override fun getLyricsInBulk(songs: List<Track>): List<LyricsDto> = runBlocking {
-        logger.info { "Starting bulk fetch for ${songs.size} songs" }
+    override fun getLyricsInBulk(tracks: List<TrackDto>): LyricsDataDto = runBlocking {
+        logger.info { "Starting bulk fetch for ${tracks.size} songs" }
+        val lyricsList = tracks.map { song -> getLyricsWithRateLimit(song) }
+        logger.info { "Completed bulk fetch for ${tracks.size} songs" }
 
-        val lyricsList = songs.map { song ->
-            rateLimit(5000) {
-                getLyrics(song.artist, song.title)
-            }
-        }
-        logger.info { "Completed bulk fetch for ${songs.size} songs" }
-
-        return@runBlocking lyricsList
+        return@runBlocking LyricsDataDto(lyricsList)
     }
+
+    private suspend fun LyricsOvhService.getLyricsWithRateLimit(track: TrackDto) =
+        rateLimit(5000) {
+            getLyrics(track.artist, track.title)
+        }
 
     override fun getLyrics(artist: String, title: String): LyricsDto {
         val uri = buildUri(artist, title)
@@ -44,7 +43,7 @@ class LyricsOvhService(
             onSuccess = { response -> lyricsDtoMapper.lyricsOvhResponseToDto(response, artist, title) },
             onFailure = { e ->
                 logger.error(e) { "Error while fetching lyrics from URI: $uri" }
-                LyricsDto(artist, title, "")
+                LyricsDto(TrackDto(artist, title), "")
             }
         )
     }

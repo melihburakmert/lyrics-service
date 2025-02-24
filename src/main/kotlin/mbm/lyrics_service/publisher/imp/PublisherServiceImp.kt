@@ -1,6 +1,6 @@
 package mbm.lyrics_service.publisher.imp
 
-import mbm.lyrics_service.lyrics.LyricsDto
+import mbm.lyrics_service.domain.LyricsDataDto
 import mbm.lyrics_service.publisher.PublisherService
 import mbm.lyrics_service.publisher.configuration.PublisherMqProperties
 import mbm.lyrics_service.publisher.mapper.LyricsMessageMapper
@@ -16,8 +16,8 @@ class PublisherServiceImp(
     private val lyricsMessageMapper: LyricsMessageMapper
     ) : PublisherService {
 
-    override fun publishLyrics(lyrics: List<LyricsDto>) {
-        val lyricsMessage = lyricsMessageMapper.map(lyrics)
+    override fun publishLyrics(lyricsDataDto: LyricsDataDto) {
+        val lyricsMessage = lyricsMessageMapper.map(lyricsDataDto)
         val serializedMessage = serializationService.serialize(lyricsMessage)
         streamBridge.send(publisherMqProperties.lyricsTopicName, serializedMessage)
     }
