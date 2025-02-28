@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component
 class PlaybackDataMessageMapper {
     fun map(message: PlaybackDataMessage): PlaybackDataDto {
         val tracks = message.tracks.map { TrackDto(it.artist, it.title) }
-        return PlaybackDataDto(tracks)
+        return PlaybackDataDto(tracks, message.sessionId)
     }
 }

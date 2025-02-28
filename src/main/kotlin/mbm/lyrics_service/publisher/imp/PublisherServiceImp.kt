@@ -16,8 +16,8 @@ class PublisherServiceImp(
     private val lyricsMessageMapper: LyricsMessageMapper
     ) : PublisherService {
 
-    override fun publishLyrics(lyricsDataDto: LyricsDataDto) {
-        val lyricsMessage = lyricsMessageMapper.map(lyricsDataDto)
+    override fun publishLyrics(lyricsDataDto: LyricsDataDto, sessionId: String) {
+        val lyricsMessage = lyricsMessageMapper.map(lyricsDataDto, sessionId)
         val serializedMessage = serializationService.serialize(lyricsMessage)
         streamBridge.send(publisherMqProperties.lyricsTopicName, serializedMessage)
     }

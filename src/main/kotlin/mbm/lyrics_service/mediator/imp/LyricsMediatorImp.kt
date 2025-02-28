@@ -13,6 +13,6 @@ class LyricsMediatorImp(
 ) : LyricsMediator {
     override fun handlePlaybackDataReceived(playbackDataDto: PlaybackDataDto) {
         val lyricsDataDto = lyricsService.getLyricsInBulk(playbackDataDto.tracks)
-        publisherService.publishLyrics(lyricsDataDto)
+        publisherService.publishLyrics(lyricsDataDto, playbackDataDto.sessionId)
     }
 }

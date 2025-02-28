@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class LyricsMessageMapper {
-    fun map(lyricsDataDto: LyricsDataDto): LyricsMessage =
-        LyricsMessage(lyricsDataDto.lyrics.map { Lyrics(Track(it.track.artist, it.track.title), it.lyrics) })
+    fun map(lyricsDataDto: LyricsDataDto, sessionId: String): LyricsMessage {
+        val lyrics = lyricsDataDto.lyrics.map { Lyrics(Track(it.track.artist, it.track.title), it.lyrics) }
+        return LyricsMessage(lyrics, sessionId)
+    }
 }
